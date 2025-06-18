@@ -1,5 +1,8 @@
-function LAAlert({ type = 'success', message }) {
-    const base = 'px-4 py-3 rounded-lg text-sm border-l-4';
+
+import Alert from "@mui/material/Alert";
+
+function LAAlert({ type, message }) {
+    const base = 'px-4 py-3 rounded-lg text-sm border-l-4 fixed top-40 z-40 left-10';
     const types = {
         success: 'bg-green-100 text-green-800 border-green-500',
         error: 'bg-red-100 text-red-800 border-red-500',
@@ -8,9 +11,9 @@ function LAAlert({ type = 'success', message }) {
     };
 
     return (
-        <div className={`${base} ${types[type]}`}>
+        <Alert className={`${base} ${types.type}`}>
             {message}
-        </div>
+        </Alert>
     );
 }
 

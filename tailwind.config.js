@@ -1,3 +1,4 @@
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,jsx}"],
@@ -8,6 +9,8 @@ export default {
         gold: "#D4AF37",
         goldLight: "#E8C766",
         goldDark: "#B58E23",
+
+        orange: "#ee8800",
 
         // خاکستری‌ها
         grayLight: "#F5F5F5",
