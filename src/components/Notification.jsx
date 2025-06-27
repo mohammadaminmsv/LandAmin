@@ -3,9 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { NotiActions } from "../hooks/Notiaction";
 import LAAlert from "./LaAlert";
 
-const Notification = ({ type, message }) => {
+const Notification = () => {
   const dispatch = useDispatch();
   const notiaction = useSelector((state) => state.noti.notiaction);
+  console.log(notiaction);
   setTimeout(() => {
     dispatch(
       NotiActions.showNotification({
@@ -20,8 +21,8 @@ const Notification = ({ type, message }) => {
     <>
       {notiaction.open && (
         <LAAlert
-          type={type}
-          message={message}
+          type={notiaction.type}
+          message={notiaction.message}
         />
       )}
     </>

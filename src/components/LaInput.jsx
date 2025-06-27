@@ -7,7 +7,7 @@ function LaInput({
     value,
     onChange,
     placeholder = '',
-    type = 'text',
+    type,
     error = '',
     icon: Icon = null,
     readOnly = false,

@@ -56,7 +56,7 @@ const Logging = () => {
                     ورود به حساب کاربری
                 </h2>
 
-                {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+                {error && <p className="text-red text-center mb-4">{error}</p>}
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <LaInput

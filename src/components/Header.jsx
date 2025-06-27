@@ -56,7 +56,7 @@ function Header() {
 
             {/* منوی دسکتاپ */}
             <nav className="hidden md:block bg-white relative">
-                <ul className="flex justify-center gap-10 text-sm text-grayDark py-3">
+                <ul className="flex justify-center gap-10 text-sm text-grayDark p-3">
                     <Link to='/'>
                         <li className="font-bold hover:text-gold cursor-pointer">صفحه اصلی</li>
                     </Link>

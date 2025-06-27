@@ -9,6 +9,18 @@
   font-style: normal;
 }
 
+/* برای Chrome، Safari، Edge */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* برای Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 @layer base {
   body {
     @apply bg-offWhite text-grayDark font-vazir;
