@@ -9,6 +9,7 @@ import { registerUser } from "../services/SignUp/registerUser";
 import { login } from "../hooks/authSlice";
 import { mainUser } from "../hooks/userLoged";
 import { LastLog } from "../services/Logging/LastLog";
+import Captcha from "../components/Capcha";
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -24,6 +25,12 @@ const Register = () => {
         rePassword: "",
     });
     const [errors, setErrors] = useState({});
+    const [isCaptchaValid, setIsCaptchaValid] = useState(false);
+
+    const handleCaptchaValidation = (status) => {
+        setIsCaptchaValid(status);
+    };
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -82,7 +89,7 @@ const Register = () => {
                         type: "success",
                     })
                 );
-                dispatch(login());
+                dispatch(login(data.token));
                 dispatch(mainUser(data.data));
                 navigate("/dashboard");
 
@@ -227,9 +234,11 @@ const Register = () => {
                     {errors.Email && (
                         <p className="text-red text-sm mt-1">{errors.Email}</p>
                     )}
+                    <Captcha onValidate={handleCaptchaValidation} />
                     <LaButton
                         type="submit"
-                        className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 rounded-md transition duration-200"
+                        variant="primary"
+                        disabled={!isCaptchaValid}
                     >
                         ثبت‌ نام
                     </LaButton>

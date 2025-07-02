@@ -31,14 +31,23 @@ function Header() {
                 </div>
 
                 {/* ورود + سبد خرید */}
-                <div className="flex items-center justify-center md:justify-end w-full md:w-auto gap-4">
+                <div className="flex items-center justify-center md:justify-end  md:w-auto gap-4">
                     {isLoggedIn ? (
-                        <LaButton variant="danger" onClick={() => {
-                            localStorage.removeItem("token");
-                            window.location.reload();
-                        }}>
-                            خروج
-                        </LaButton>
+                        <div className='flex gap-2'>
+                            <Link to='dashboard'>
+                                <LaButton variant="primary">
+                                    داشبورد
+                                </LaButton>
+                            </Link>
+                            <LaButton variant="danger" onClick={() => {
+                                localStorage.removeItem("token");
+                                window.location.reload();
+                            }}>
+                                خروج
+                            </LaButton>
+
+                        </div>
+
                     ) : (
                         <Link to='/logging'>
                             <LaButton variant="primary">

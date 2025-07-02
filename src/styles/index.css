@@ -21,6 +21,17 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE & Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+html, body {
+  overflow-x: hidden;
+}
 @layer base {
   body {
     @apply bg-offWhite text-grayDark font-vazir;

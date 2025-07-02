@@ -12,6 +12,7 @@ import Logging from '../pages/Logging';
 import Information from '../pages/Information';
 import Register from '../pages/Register';
 import Dashboard from '../pages/Dashboard';
+import ChatWidget from '../components/ChatWidget';
 import DisCount from '../pages/DisCount';
 import Contact from '../pages/Contact';
 import { NotiActions } from '../hooks/Notiaction';
@@ -73,6 +74,7 @@ function AppRouter() {
                     <Route path="/product/:id" element={<ProductDetails />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
+                <ChatWidget />
             </MainLayout>
         </Router>
     );

@@ -21,7 +21,7 @@ export default {
         black: "#000000",
         offBlack: "#1A1A1A",
         white: "#FFFFFF",
-        offWhite: "#FAFAFA",
+        offWhite: "#FFFFFF",
 
         // قرمزها
         red: "#E63946",

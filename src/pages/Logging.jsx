@@ -9,6 +9,7 @@ import { loginUser } from "../services/Logging/loginUser";
 import LaInput from "../components/LaInput";
 import LaButton from "../components/LaButton";
 import { LastLog } from "../services/Logging/LastLog";
+import Captcha from "../components/Capcha";
 
 const Logging = () => {
     const [formData, setFormData] = useState({
@@ -17,6 +18,11 @@ const Logging = () => {
         Password: "",
     });
     const [error, setError] = useState("");
+    // const [isCaptchaValid, setIsCaptchaValid] = useState(false);
+
+    // const handleCaptchaValidation = (status) => {
+    //     setIsCaptchaValid(status);
+    // };
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -25,6 +31,7 @@ const Logging = () => {
         try {
             const data = await loginUser(formData);
             if (data.success) {
+                console.log("data", data);
                 localStorage.setItem("token", data.token);
                 dispatch(
                     NotiActions.showNotification({
@@ -35,7 +42,7 @@ const Logging = () => {
                 );
                 const infoLog = await LastLog(data.data.NidUser, data.token);
                 console.log(infoLog);
-                dispatch(login());
+                dispatch(login(data.token));
                 dispatch(mainUser(data.data));
                 navigate("/dashboard");
             }
@@ -75,9 +82,12 @@ const Logging = () => {
                         onChange={handleChange}
                         className="bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 w-full"
                     />
+                    {/* <Captcha onValidate={handleCaptchaValidation} /> */}
                     <LaButton
                         type="submit"
-                        className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 rounded-md transition duration-200"
+                        variant='primary'
+                    // disabled={!isCaptchaValid}
+
                     >
                         ورود
                     </LaButton>
