@@ -1,26 +1,51 @@
 import { FaSearch, FaShoppingCart, FaBars, FaChevronDown } from 'react-icons/fa';
 import LaButton from './LaButton';
 import LaInput from './LaInput';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { getCategory } from '../services/Category/getCategory';
+import { useCart } from '../hooks/useCart';
 
 function Header() {
     const [menuOpen, setMenuOpen] = useState(false);
+    const [cartItemsCount, setCartItemsCount] = useState(0);
+    const [categories, setCategories] = useState([]);
+
+    const { itemCount } = useCart();
+
+    useEffect(() => {
+        setCartItemsCount(itemCount);
+    }, [itemCount]);
     const [mobileCategoryOpen, setMobileCategoryOpen] = useState(false);
     const token = localStorage.getItem("token");
     const isLoggedIn = !!token;
+    const getAllCategory = async () => {
+        try {
+            const data = await getCategory();
+            if (data.success) {
+                setCategories(data.data)
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
-    const categories = ['قطعات کامپیوتر', 'لوازم یدکی خودرو', 'کابل و مبدل', 'سخت‌افزار', 'لوازم جانبی'];
+    useEffect(() => {
 
+        return () => {
+            getAllCategory()
+        };
+    }, []);
     return (
         <header className="w-full font-vazir shadow-md sticky top-0 z-50 bg-white">
             {/* ردیف بالا */}
             <div className="flex flex-col md:flex-row items-center justify-between p-4 gap-2 md:gap-0">
                 {/* لوگو */}
-                <div className="flex items-center justify-center md:justify-start w-full md:w-auto">
-                    <img src="/aminlogo.png" alt="Landamin Logo" className="h-12 w-auto" />
-                </div>
-
+                <Link to=''>
+                    <div className="flex items-center justify-center md:justify-start w-full md:w-auto">
+                        <img src="/aminlogo.png" alt="Landamin Logo" className="h-12 w-auto" />
+                    </div>
+                </Link>
                 {/* جستجو */}
                 <div className="w-full md:flex-1 max-w-xl px-2 md:px-6">
                     <LaInput
@@ -56,7 +81,20 @@ function Header() {
                         </Link>
 
                     )}
-                    <FaShoppingCart className="text-2xl text-orange" />
+                    <Link to='cart' className="relative group">
+                        <FaShoppingCart className={`
+    text-2xl text-orange 
+    transition-all duration-300 
+    transform group-hover:scale-110
+  `} />
+
+                        {cartItemsCount > 0 && (
+                            <span className="absolute -top-2 -right-2 bg-red text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center transition-all duration-300 group-hover:scale-125">
+
+                                {cartItemsCount}
+                            </span>
+                        )}
+                    </Link>
                     <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
                         <FaBars className="text-xl text-goldDark" />
                     </button>
@@ -69,6 +107,9 @@ function Header() {
                     <Link to='/'>
                         <li className="font-bold hover:text-gold cursor-pointer">صفحه اصلی</li>
                     </Link>
+                    <Link to='/productsAll'>
+                        <li className="hover:text-gold cursor-pointer">تمامی محصولات</li>
+                    </Link>
 
                     {/* دسته‌بندی با dropdown هاور */}
                     <li className="group relative cursor-pointer hover:text-gold">
@@ -76,12 +117,12 @@ function Header() {
                             دسته‌بندی <FaChevronDown className="text-xs mt-0.5" />
                         </div>
                         <ul className="absolute top-full right-0 bg-white border border-gray-200 rounded-md shadow-md mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 min-w-48">
-                            {categories.map((item) => (
+                            {categories?.map((item) => (
                                 <li
-                                    key={item}
-                                    className="px-4 py-2 hover:bg-gray-100 text-right whitespace-nowrap"
+                                    key={item.PartTypeID}
+                                    className="px-4 text-black py-2 hover:bg-gray-100 text-right whitespace-nowrap"
                                 >
-                                    {item}
+                                    {item.Name}
                                 </li>
                             ))}
                         </ul>
@@ -99,7 +140,9 @@ function Header() {
                 <div className="md:hidden border-t border-gray-200 bg-white px-4">
                     <ul className="flex flex-col space-y-3 text-sm text-grayDark">
                         <Link to='/'><li className="font-bold">صفحه اصلی</li></Link>
-
+                        <Link to='/productsAll'>
+                            <li className="font-bold hover:text-gold cursor-pointer">تمامی محصولات</li>
+                        </Link>
                         {/* دسته‌بندی آکاردئونی */}
                         <li>
                             <button
@@ -112,8 +155,8 @@ function Header() {
 
                             {mobileCategoryOpen && (
                                 <ul className="mt-2 space-y-1 pr-2 text-sm text-gray-600">
-                                    {categories.map((cat) => (
-                                        <li key={cat} className="pl-2 border-r-2 border-gold">{cat}</li>
+                                    {categories?.map((cat) => (
+                                        <li key={cat.PartTypeID} className="pl-3 border-gold">{cat.Name}</li>
                                     ))}
                                 </ul>
                             )}

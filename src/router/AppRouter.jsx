@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Home from '../pages/Home';
-import Shop from '../pages/Shop';
 import Cart from '../pages/Cart';
 import Checkout from '../pages/Checkout';
 import ProductDetails from '../pages/ProductDetails';
@@ -18,6 +17,7 @@ import Contact from '../pages/Contact';
 import { NotiActions } from '../hooks/Notiaction';
 import ProtectedRoute from '../components/ProtectedRoute';
 import Notification from '../components/Notification';
+import ProductsAll from '../pages/ProductsAll';
 
 function AppRouter() {
     const notification = useSelector((state) => state.noti.notiaction);
@@ -56,11 +56,11 @@ function AppRouter() {
                         }
                     />
                     <Route path="/" element={<Home />} />
-                    <Route path="/shop" element={<Shop />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/checkout" element={<Checkout />} />
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/information" element={<Information />} />
+                    <Route path="/productsAll" element={<ProductsAll />} />
                     <Route path="/disCount" element={<DisCount />} />
                     <Route
                         path="/dashboard"

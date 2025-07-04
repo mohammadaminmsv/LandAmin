@@ -1,3 +1,6 @@
 .inner-shadow {
   box-shadow: inset 1px 1px 1px 1px rgba(0, 0, 0, 0.6);
 }
+.cart-item {
+  transition: all 0.3s ease;
+}

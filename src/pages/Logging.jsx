@@ -44,7 +44,7 @@ const Logging = () => {
                 console.log(infoLog);
                 // در جایی که پاسخ لاگین را دریافت می‌کنید:
                 dispatch(login({
-                    token: data.data.token,
+                    token: data.token,
                     user: data.data.user // اگر می‌خواهید اطلاعات کاربر را هم ذخیره کنید
                 }));
                 dispatch(mainUser(data.data));
