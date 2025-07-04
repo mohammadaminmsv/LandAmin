@@ -89,7 +89,10 @@ const Register = () => {
                         type: "success",
                     })
                 );
-                dispatch(login(data.token));
+                dispatch(login({
+                    token: data.data.token,
+                    user: data.data.user
+                }));
                 dispatch(mainUser(data.data));
                 navigate("/dashboard");
 

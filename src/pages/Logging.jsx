@@ -42,7 +42,11 @@ const Logging = () => {
                 );
                 const infoLog = await LastLog(data.data.NidUser, data.token);
                 console.log(infoLog);
-                dispatch(login(data.token));
+                // در جایی که پاسخ لاگین را دریافت می‌کنید:
+                dispatch(login({
+                    token: data.data.token,
+                    user: data.data.user // اگر می‌خواهید اطلاعات کاربر را هم ذخیره کنید
+                }));
                 dispatch(mainUser(data.data));
                 navigate("/dashboard");
             }
