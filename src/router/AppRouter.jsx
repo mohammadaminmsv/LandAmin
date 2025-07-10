@@ -18,6 +18,8 @@ import { NotiActions } from '../hooks/Notiaction';
 import ProtectedRoute from '../components/ProtectedRoute';
 import Notification from '../components/Notification';
 import ProductsAll from '../pages/ProductsAll';
+import FilteredPage from '../components/FilteredPage';
+import SearchResults from '../components/SearchResults';
 
 function AppRouter() {
     const notification = useSelector((state) => state.noti.notiaction);
@@ -61,6 +63,9 @@ function AppRouter() {
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/information" element={<Information />} />
                     <Route path="/productsAll" element={<ProductsAll />} />
+                    <Route path="/category/:filterName" element={<FilteredPage type="category" />} />
+                    <Route path="/brand/:filterName" element={<FilteredPage type="brand" />} />
+                    <Route path="/search" element={<SearchResults />} />
                     <Route path="/disCount" element={<DisCount />} />
                     <Route
                         path="/dashboard"

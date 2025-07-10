@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { getAllProduct } from "../services/Product/getAllProduct";
 import ProductCard from "../components/ProductCard";
+import { GrNext } from "react-icons/gr";
+import { GrPrevious } from "react-icons/gr";
+
 
 export default function ProductsAll() {
     const [products, setProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 15;
+    const itemsPerPage = 20;
 
     const fetchProducts = async () => {
         try {
@@ -30,7 +33,7 @@ export default function ProductsAll() {
         <div className="p-4 mx-4 md:mx-20">
             <h2 className="text-xl font-bold mb-4">لیست محصولات</h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {currentProducts.map((p) => (
                     <ProductCard key={p.NidProduct} product={p} />
                 ))}
@@ -43,7 +46,8 @@ export default function ProductsAll() {
                     disabled={currentPage === 1}
                     className="px-4 py-2 bg-red text-black text-sm rounded disabled:opacity-50"
                 >
-                    قبلی
+                    <GrNext />
+
                 </button>
 
                 {[...Array(totalPages)].map((_, i) => (
@@ -61,7 +65,7 @@ export default function ProductsAll() {
                     disabled={currentPage === totalPages}
                     className="px-4 py-2 bg-red text-black text-sm rounded disabled:opacity-50"
                 >
-                    بعدی
+                    <GrPrevious />
                 </button>
             </div>
         </div>
