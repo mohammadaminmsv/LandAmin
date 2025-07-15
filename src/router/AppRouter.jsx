@@ -13,7 +13,7 @@ import Register from '../pages/Register';
 import Dashboard from '../pages/Dashboard';
 import ChatWidget from '../components/ChatWidget';
 import DisCount from '../pages/DisCount';
-import Contact from '../pages/Contact';
+import ContactUs from '../pages/ContactUs';
 import { NotiActions } from '../hooks/Notiaction';
 import ProtectedRoute from '../components/ProtectedRoute';
 import Notification from '../components/Notification';
@@ -60,7 +60,7 @@ function AppRouter() {
                     <Route path="/" element={<Home />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/checkout" element={<Checkout />} />
-                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/ContactUs" element={<ContactUs />} />
                     <Route path="/information" element={<Information />} />
                     <Route path="/productsAll" element={<ProductsAll />} />
                     <Route path="/category/:filterName" element={<FilteredPage type="category" />} />

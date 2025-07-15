@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 
-const ScrollBar = ({ brands }) => {
+const ScrollBar = ({ object }) => {
     const scrollRef = useRef(null);
 
     const scroll = (direction) => {
@@ -34,21 +34,21 @@ const ScrollBar = ({ brands }) => {
             {/* لیست برندها */}
             <div
                 ref={scrollRef}
-                className="flex gap-4 overflow-x-auto no-scrollbar px-10 pb-2"
+                className="flex gap-4 overflow-x-auto no-scrollbar px-10 pb-2 scroll-smooth"
             >
-                {brands.map((brand, i) => (
+                {object.map((obj, i) => (
                     <div
                         key={i}
-                        className="min-w-[200px] flex flex-col justify-center bg-white px-6 py-3 rounded-full shadow text-sm font-medium flex-shrink-0 text-center"
+                        className="min-w-[200px] flex flex-col justify-center bg-white px-6 py-3 rounded-md shadow text-sm font-medium flex-shrink-0 text-center"
                     >
                         <img
-                            src={brand.image}
-                            alt={brand.name}
-                            height={100}
-                            width={150}
+                            src={obj.image}
+                            alt={obj.Name}
+                            height={150}
+                            width={200}
                             className="mx-auto mb-2"
                         />
-                        {brand.name}
+                        {obj.Name}
                     </div>
                 ))}
             </div>

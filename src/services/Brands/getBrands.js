@@ -1,10 +1,12 @@
 import axios from "axios";
 import config from "../../../public/config";
 
-export const getBrands = async () => {
+export const getBrands = async (limit) => {
   try {
+        const url = limit ? `/brands/getAllBrand?limit=${limit}` : `/brands/getAllBrand`;
+
     const response = await axios.get(
-      `${config.apiBaseURL}/brands/getAllBrand`
+      `${config.apiBaseURL}${url}`
 
     );
     return response.data;

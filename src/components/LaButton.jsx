@@ -4,7 +4,7 @@ const LaButton = ({ children, variant = "primary", disabled, onClick, type = "bu
     const baseStyles =
         "px-4 py-2 rounded-full w-full font-medium transition disabled:opacity-50 disabled:cursor-not-allowed";
     const variants = {
-        primary: "bg-gold text-white hover:bg-goldDark",
+        primary: "bg-blue text-white hover:bg-darkBlue",
         secondary: "bg-gray text-black hover:bg-gray-300",
         danger: "bg-red text-white hover:bg-redDark",
     };

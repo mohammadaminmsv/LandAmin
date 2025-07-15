@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MySlider from "../components/MySlider";
 import ScrollBar from "../components/ScrollBar";
 import LaButton from "../components/LaButton";
-import LaInput from "../components/LaInput";
+import { getAllProduct } from "../services/Product/getAllProduct";
+import { getBrands } from "../services/Brands/getBrands";
+import { getCategory } from "../services/Category/getCategory";
+import ScrollProductBar from "../components/ScrollProductBar";
 
 const sliders1 = [
     { image: "/images/slidershow/slide1.png", caption: "🎉 جشنواره فروش تابستانی" },
@@ -21,18 +24,6 @@ const sliders3 = [
     { image: "/images/slidershow/land.png" },
 ];
 
-
-const brands = [
-    { image: "/images/brands/intel-logo.png" },
-    { image: "/images/brands/Amd-logo.png" },
-    { image: "/images/brands/nvidia-logo.png" },
-    { image: "/images/brands/asus-logo.png" },
-    { image: "/images/brands/gigabyte-logo.png" },
-    { image: "/images/brands/cicco-logo.jpg" },
-    { image: "/images/brands/logo.svg" },
-    { image: "/images/brands/apple-logo.png" },
-];
-
 const features = [
     { image: "/images/why/transport.png", text: "ارسال سریع به سراسر کشور" },
     { image: "/images/why/images.png", text: "تضمین اصالت کالا" },
@@ -40,107 +31,96 @@ const features = [
     { image: "/images/why/marketingservices.png", text: "خدمات پس از خرید" },
 ];
 
-const categories = [
-    { title: "کارت گرافیک", image: "/images/category/eforce-logo.png" },
-    { title: "پردازنده", image: "/images/category/procces-logo.png" },
-    { title: "مادربرد", image: "/images/category/motherboard-logo.png" },
-    { title: "رم و حافظه", image: "/images/category/ram-logo.png" },
-];
-
 const Home = () => {
+    const NextArrow = (props) => {
+        const { className, onClick } = props;
+        return <FaArrowRight className={`${className} text-black`} onClick={onClick} />;
+    };
+
+    const PrevArrow = (props) => {
+        const { className, onClick } = props;
+        return <FaArrowLeft className={`${className} text-black`} onClick={onClick} />;
+    };
+
+    const [products, setProducts] = useState([]);
+    const [brands, setBrands] = useState([]);
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        const fetchAll = async () => {
+            try {
+                const [prodRes, brandRes, catRes] = await Promise.all([
+                    getAllProduct(12),
+                    getBrands(12),
+                    getCategory(12)
+                ]);
+
+                if (prodRes.success) setProducts(prodRes.data || []);
+                if (brandRes.success) setBrands(brandRes.data || []);
+                if (catRes.success) setCategories(catRes.data || []);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        fetchAll();
+    }, []);
+
+    const filteredProducts = products.filter(p => p.newProduct === 0);
+    const newProducts = products.filter(p => p.newProduct === 1);
+    const discountProducts = products.filter(p => p.discount > 0);
+
     return (
-        <div className="min-h-screen bg-gray-50 text-gray-800 p-4">
-            {/* اسلایدشو اول */}
-            <div className="grid grid-cols-1 w-full gap-4 my-10">
+        <div className="min-h-screen bg-gray-50 text-gray-800 p-4 space-y-20">
+            <div className="grid grid-cols-1 w-full gap-4">
                 <MySlider slides={sliders3} />
             </div>
 
-            <div className="grid grid-cols-8 gap-4 my-10">
+            <div className="grid grid-cols-1 md:grid-cols-8 gap-4">
                 <div className="col-span-5"><MySlider slides={sliders1} /></div>
                 <div className="col-span-3"><MySlider slides={sliders2} /></div>
             </div>
 
-            {/* جدیدترین‌ها */}
-            <section className="my-20 bg-gold p-10 rounded-lg">
-                <h2 className="text-3xl  font-bold mb-4 text-center">جدیدترین محصولات</h2>
-                <div className="grid md:grid-cols-4 gap-4">
-                    {[1, 2, 3, 4].map((i) => (
-                        <div key={i} className="bg-white p-4 rounded-xl shadow text-center">
-                            <img
-                                src={`/images/product${i}.jpg`}
-                                alt="product"
-                                className="w-full h-32 object-cover mb-2 rounded"
-                            />
-                            <h3 className="font-semibold">محصول #{i}</h3>
-                            <p className="text-sm text-gray-500">توضیح کوتاه محصول</p>
-                        </div>
-                    ))}
-                </div>
+            <section className="bg-white p-6 rounded-xl shadow">
+                <h2 className="text-2xl font-bold mb-4">محصولات ما</h2>
+                <ScrollProductBar products={filteredProducts} />
+
             </section>
 
-            {/* تخفیف‌ها */}
-            <section className="my-20">
-                <h2 className="text-xl font-bold mb-4 text-center text-red-600">
-                    پیشنهادات ویژه و تخفیف‌ها
-                </h2>
-                <div className="grid md:grid-cols-3 gap-4">
-                    {[1, 2, 3].map((i) => (
-                        <div
-                            key={i}
-                            className="bg-white p-4 rounded-xl border border-red-200 shadow text-center"
-                        >
-                            <img
-                                src={`/images/discount${i}.jpg`}
-                                alt="discount"
-                                className="w-full h-32 object-cover mb-2 rounded"
-                            />
-                            <h3 className="font-semibold text-red-500">
-                                محصول تخفیف‌دار #{i}
-                            </h3>
-                            <p className="text-sm text-gray-500">تا ۳۰٪ تخفیف ویژه</p>
-                        </div>
-                    ))}
-                </div>
+            <section>
+                <h2 className="text-2xl font-bold mb-4 text-red-600">پیشنهادات ویژه و تخفیف‌ها</h2>
+                <ScrollProductBar products={discountProducts} />
+
             </section>
 
-            {/* دسته‌بندی‌ها */}
-            <section className="my-20">
+            <section className="bg-white p-6 rounded-xl shadow">
+                <h2 className="text-2xl font-bold mb-4">جدیدترین محصولات</h2>
+                <ScrollProductBar products={newProducts} />
+            </section>
+
+            <section className="text-center">
                 <h2 className="text-xl font-bold mb-4 text-center">دسته‌بندی‌ها</h2>
-                <div className="grid md:grid-cols-4 gap-4">
-                    {categories.map((cat, i) => (
-                        <div key={i} className="flex flex-col justify-between bg-white p-4 rounded-xl shadow text-center">
-                            <img
-                                src={cat.image}
-                                alt={cat.title}
-                                width={200}
-                                height={200}
-                                className="w-full object-cover mb-2 rounded"
-                            />
-                            <h3 className="font-semibold">{cat.title}</h3>
-                        </div>
-                    ))}
-                </div>
+                <ScrollBar object={categories} />
             </section>
 
-            {/* برندها */}
-            <section className="my-20 text-center">
-                <h2 className="text-xl font-bold mb-4 ">برندهای ما</h2>
-                <ScrollBar brands={brands} />
+            <section className="text-center">
+                <h2 className="text-xl font-bold mb-4">برندهای ما</h2>
+                <ScrollBar object={brands} />
             </section>
 
-            {/* ثبت‌نام در خبرنامه */}
-            <section className="bg-indigo-100 p-6 rounded-xl text-center my-20">
+            <section className="bg-indigo-100 p-6 rounded-xl text-center">
                 <h2 className="text-lg font-semibold mb-2">عضویت در خبرنامه</h2>
                 <p className="text-sm text-gray-600 mb-4">برای دریافت آخرین تخفیف‌ها و محصولات جدید، ایمیل خود را وارد کنید.</p>
-                <input type="email" placeholder="ایمیل شما..." className="p-2 m-3 w-80 rounded-l border border-gray-300" />
-                <LaButton variant="danger">عضویت</LaButton>
+                <div className="flex flex-col text-center items-center gap-2 justify-center">
+                    <input type="email" placeholder="ایمیل شما..." className="p-2 w-80 rounded-l border border-gray-300" />
+                    <div className="w-96">
+                        <LaButton variant="danger">عضویت</LaButton>
+                        </div>
+                </div>
             </section>
 
-            {/* ویژگی‌های خرید */}
-            <section className="my-20">
-                <h2 className="text-xl font-bold mb-4 text-center">
-                    چرا از ما خرید کنید؟
-                </h2>
+            <section>
+                <h2 className="text-xl font-bold mb-4 text-center">چرا از ما خرید کنید؟</h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {features.map((feature, i) => (
                         <div
@@ -150,13 +130,10 @@ const Home = () => {
                             <img
                                 src={feature.image}
                                 alt={feature.text}
-                                width={200}
-                                height={200}
-                                className="w-full object-cover mb-2 rounded"
+                                className="w-full h-32 object-contain mb-2"
                             />
-                            <p className="font-bold text-goldDark text-xl">
-                            {feature.text}
-
+                            <p className="font-bold text-tealDark text-lg">
+                                {feature.text}
                             </p>
                         </div>
                     ))}

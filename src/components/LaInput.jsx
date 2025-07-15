@@ -24,7 +24,7 @@ function LaInput({
     ${Icon ? 'pl-10' : ''}
     ${disabled ? 'opacity-60 cursor-not-allowed' : ''}
     ${readOnly ? 'bg-gray-100' : ''}
-    focus:outline-none focus:ring-2 focus:ring-gold focus:border-gold
+    focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue
     ${error ? 'border-red focus:ring-red' : 'border-gray-300'}
   `;
 

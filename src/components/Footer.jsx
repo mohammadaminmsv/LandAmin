@@ -8,11 +8,11 @@ function Footer() {
                 <div className="col-span-2 md:col-span-1">
                     <h3 className="text-base font-bold mb-3">خرید از لندامین</h3>
                     <ul className="space-y-2">
-                        <li>لباس مردانه</li>
-                        <li>خرید کیف و کفش</li>
-                        <li>محصولات آرایشی</li>
-                        <li>خرید طلا و ساعت</li>
-                        <li>خرید لوازم خانه</li>
+                        <li>لب تاب</li>
+                        <li>کیس کامپیوتر</li>
+                        <li>سرور</li>
+                        <li>رم و جافظه</li>
+                        <li>خرید لوازم جانبی</li>
                     </ul>
                 </div>
                 <div>

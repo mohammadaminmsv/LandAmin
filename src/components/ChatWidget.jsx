@@ -38,7 +38,6 @@ const ChatWidget = () => {
     };
   }, []);
 
-  // ارسال پیام به سرور
   const sendMessage = async () => {
     if (!input.trim()) return;
 
@@ -48,7 +47,6 @@ const ChatWidget = () => {
     setError(null);
 
     try {
-      // اضافه کردن پیام کاربر به لیست
       setMessages(prev => [...prev, {
         text: userMessage,
         isUser: true,

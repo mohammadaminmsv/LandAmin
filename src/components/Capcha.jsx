@@ -40,7 +40,7 @@ const Captcha = ({ onValidate }) => {
         <div className="flex flex-col sm:flex-row sm:items-start sm:gap-4 gap-2 w-full">
             {/* کپچا */}
             <div className="flex items-start gap-2">
-                <span className="bg-white border-gold border-2 px-4 py-2 rounded-md font-mono tracking-wider text-base text-gray-700 select-none">
+                <span className="bg-white border-teal border-2 px-4 py-2 rounded-md font-mono tracking-wider text-base text-gray-700 select-none">
                     {captchaText}
                 </span>
                 <LaButton variant="secondary" onClick={generateCaptcha}>

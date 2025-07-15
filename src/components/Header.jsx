@@ -7,24 +7,92 @@ import { getCategory } from '../services/Category/getCategory';
 import { useCart } from '../hooks/useCart';
 import { getBrands } from '../services/Brands/getBrands';
 import { getAllProduct } from '../services/Product/getAllProduct';
+import { useLocation } from 'react-router-dom';
+
 
 function Header() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [cartItemsCount, setCartItemsCount] = useState(0);
     const [categories, setCategories] = useState([]);
     const [brands, setBrands] = useState([]);
+    const [accessory, SetAccessory] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [products, setProducts] = useState([]);
     const [filteredResults, setFilteredResults] = useState([]);
     const navigate = useNavigate();
 
+    const { itemCount } = useCart();
+
+    const [mobileMenuOpen, setMobileMenuOpen] = useState({
+        category: false,
+        brand: false,
+    });
+    const location = useLocation();
+
+
+    const token = localStorage.getItem("token");
+    const isLoggedIn = !!token;
+
+    const handleBtnMobile = (type) => {
+        setMobileMenuOpen((prev) => ({
+            ...prev,
+            [type]: !prev[type]
+        }));
+    };
+
+    const getAllCategory = async () => {
+        try {
+            const data = await getCategory();
+            if (data.success) {
+                setCategories(data.data)
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const getAllBrands = async () => {
+        try {
+            const data = await getBrands();
+            if (data.success) {
+                setBrands(data.data.sort((a, b) => a.sortId - b.sortId));
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const getAllAccessory = async () => {
+        try {
+            const data = await getAllAccessory();
+            if (data.success) {
+                SetAccessory(data.data);
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     useEffect(() => {
-        const fetch = async () => {
-            const res = await getAllProduct();
-            if (res.success) setProducts(res.data);
-        };
-        fetch();
+        getAllCategory();
+        getAllBrands();
+        getAllAccessory();
     }, []);
+
+    useEffect(() => {
+        setCartItemsCount(itemCount);
+    }, [itemCount]);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            if (!products.length && searchQuery.trim()) {
+                const res = await getAllProduct();
+                if (res.success) setProducts(res.data || []);
+            }
+        };
+
+        fetchProducts();
+    }, [searchQuery]);
 
     useEffect(() => {
         const query = searchQuery.trim().toLowerCase();
@@ -42,65 +110,16 @@ function Header() {
         setFilteredResults(filtered);
     }, [searchQuery, products]);
 
-    const { itemCount } = useCart();
-
-    useEffect(() => {
-        setCartItemsCount(itemCount);
-    }, [itemCount]);
-    const [mobileMenuOpen, setMobileMenuOpen] = useState({
-        category: false,
-        brand: false,
-    });
-    const token = localStorage.getItem("token");
-    const isLoggedIn = !!token;
-    const getAllCategory = async () => {
-        try {
-            const data = await getCategory();
-            if (data.success) {
-                setCategories(data.data)
-            }
-        } catch (err) {
-            console.log(err);
-        }
-
-    };
-    const getAllBrands = async () => {
-        try {
-            const data = await getBrands();
-            if (data.success) {
-
-                setBrands(data.data.sort((a, b) => a.sortId - b.sortId))
-            }
-        } catch (err) {
-            console.log(err);
-        }
-
-    };
-    const handleBtnMobile = (type) => {
-        setMobileMenuOpen((prev) => ({
-            ...prev,
-            [type]: !prev[type]
-        }));
-    };
-
-    useEffect(() => {
-
-        return () => {
-            getAllCategory()
-            getAllBrands()
-        };
-    }, []);
     return (
         <header className="w-full font-vazir shadow-md static md:sticky top-0 z-50 bg-white">
-            {/* ردیف بالا */}
             <div className="flex flex-col md:flex-row items-center justify-between p-4 gap-2 md:gap-0">
-                {/* لوگو */}
                 <Link to=''>
                     <div className="flex items-center justify-center md:justify-start w-full md:w-auto">
                         <img src="/aminlogo.png" alt="Landamin Logo" className="h-12 w-auto" />
                     </div>
                 </Link>
-                {/* جستجو */}
+
+                {/* جست‌وجو */}
                 <div className="relative w-full md:flex-1 max-w-xl px-2 md:px-6">
                     <LaInput
                         type="text"
@@ -110,7 +129,7 @@ function Header() {
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
 
-                    {/* Dropdown نتایج */}
+                    {/* نتایج جست‌وجو */}
                     {searchQuery && (
                         <div className="absolute -mt-3 left-0 top-full w-full bg-white border border-gray-300 shadow-lg rounded-b-xl z-50 overflow-hidden">
                             {filteredResults.length > 0 ? (
@@ -174,18 +193,14 @@ function Header() {
                             )}
                         </div>
                     )}
-
                 </div>
 
-
-                {/* ورود + سبد خرید */}
+                {/* ورود / خروج + سبد خرید */}
                 <div className="flex items-center justify-center md:justify-end  md:w-auto gap-4">
                     {isLoggedIn ? (
                         <div className='flex gap-2'>
                             <Link to='dashboard'>
-                                <LaButton variant="primary">
-                                    داشبورد
-                                </LaButton>
+                                <LaButton variant="primary">داشبورد</LaButton>
                             </Link>
                             <LaButton variant="danger" onClick={() => {
                                 localStorage.removeItem("token");
@@ -193,33 +208,24 @@ function Header() {
                             }}>
                                 خروج
                             </LaButton>
-
                         </div>
-
                     ) : (
                         <Link to='/logging'>
-                            <LaButton variant="primary">
-                                ورود / ثبت‌نام
-                            </LaButton>
+                            <LaButton variant="primary">ورود / ثبت‌نام</LaButton>
                         </Link>
-
                     )}
-                    <Link to='cart' className="relative group">
-                        <FaShoppingCart className={`
-    text-2xl text-orange 
-    transition-all duration-300 
-    transform group-hover:scale-110
-  `} />
 
+                    <Link to='cart' className="relative group">
+                        <FaShoppingCart className="text-2xl text-orange transition-all duration-300 transform group-hover:scale-110" />
                         {cartItemsCount > 0 && (
                             <span className="absolute -top-2 -right-2 bg-red text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center transition-all duration-300 group-hover:scale-125">
-
                                 {cartItemsCount}
                             </span>
                         )}
                     </Link>
+
                     <button className="md:hidden max-w-40" onClick={() => setMenuOpen(!menuOpen)}>
-                        <FaBars className="text-xl text-goldDark" />
+                        <FaBars className="text-xl text-teal" />
                     </button>
                 </div>
             </div>
@@ -227,80 +233,72 @@ function Header() {
             {/* منوی دسکتاپ */}
             <nav className="hidden md:block bg-white relative">
                 <ul className="flex justify-center gap-10 text-md text-grayDark p-3">
-                    <Link to='/'>
-                        <li className="font-bold hover:text-gold cursor-pointer">صفحه اصلی</li>
-                    </Link>
-                    <Link to='/productsAll'>
-                        <li className="hover:text-gold cursor-pointer">تمامی محصولات</li>
-                    </Link>
+                    <Link to='/'><li className={`hover:text-teal cursor-pointer ${location.pathname === '/' ? 'text-blue font-bold' : ''}`}>صفحه اصلی</li></Link>
+                    <Link to='/productsAll'><li className={`hover:text-teal cursor-pointer ${location.pathname === '/productsAll' ? 'text-blue font-bold' : ''}`}>تمامی محصولات</li></Link>
 
-                    {/* دسته‌بندی با dropdown هاور */}
-                    {/* دسته‌بندی با dropdown هاور */}
-                    <li className="group relative cursor-pointer hover:text-goldDark">
+                    <li className="group relative cursor-pointer hover:text-tealx">
                         <div className="flex items-center gap-1">
                             دسته‌بندی <FaChevronDown className="text-xs mt-0.5" />
                         </div>
-                        <div className="absolute top-full right-0 mt-2 bg-white border border-gray rounded-md shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 w-[500px] p-4 grid grid-cols-2 gap-8">
-
-                            {/* ستون ۱: دسته قطعات */}
+                        <div className="absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 w-[700px] p-6 grid grid-cols-2 gap-8">
                             <div>
-                                <div className="font-bold text-grayDark mb-2">دسته قطعات</div>
-                                <ul className="space-y-1 text-sm">
-                                    {categories.map((cat) => (
-                                        <li key={cat.PartTypeID}>
-                                            <Link
-                                                to={`/category/${encodeURIComponent(cat.Name)}`}
-                                                className="hover:text-blue transition"
-                                            >
-                                                {cat.Name}
-                                            </Link>
-                                        </li>
-                                    ))}
+                                <h4 className="font-bold text-gray-700 mb-3 border-b pb-1">قطعات داخلی</h4>
+                                <ul className="grid grid-cols-2 gap-2 text-sm text-gray-600">
+                                    {categories.map((cat) => {
+                                        const isActive = location.pathname === `/category/${encodeURIComponent(cat.Name)}`;
+                                        return (
+                                            <li key={cat.PartTypeID}>
+                                                <Link
+                                                    to={`/category/${encodeURIComponent(cat.Name)}`}
+                                                    className={`hover:text-blue transition ${isActive ? 'text-blue font-bold' : ''}`}
+                                                >
+                                                    {cat.Name}
+                                                </Link>
+                                            </li>
+                                        );
+                                    })}
+
                                 </ul>
                             </div>
-
-                            {/* ستون ۲: برندها */}
                             <div>
-                                <div className="font-bold text-grayDark mb-2">برندها</div>
-                                <ul className="space-y-1 text-sm">
-                                    {brands.map((bra) => (
-                                        <li key={bra.NidBrand}>
-                                            <Link
-                                                to={`/brand/${encodeURIComponent(bra.Name)}`}
-                                                className="hover:text-blue transition"
-                                            >
-                                                {bra.Name}
-                                            </Link>
-                                        </li>
-                                    ))}
+                                <h4 className="font-bold text-gray-700 mb-3 border-b pb-1">برندها</h4>
+                                <ul className="grid grid-cols-2 gap-2 text-sm text-gray-600">
+                                    {brands.map((bra) => {
+                                        const isActive = location.pathname === `/brand/${encodeURIComponent(bra.Name)}`;
+                                        return (
+                                            <li key={bra.NidBrand}>
+                                                <Link
+                                                    to={`/brand/${encodeURIComponent(bra.Name)}`}
+                                                    className={`hover:text-blue transition ${isActive ? 'text-blue font-bold' : ''}`}
+                                                >
+                                                    {bra.Name}
+                                                </Link>
+                                            </li>
+                                        );
+                                    })}
+
                                 </ul>
                             </div>
                         </div>
                     </li>
 
-
-                    <Link to='/information'><li className="hover:text-gold cursor-pointer">درباره ما</li></Link>
-                    <Link to='/contact'><li className="hover:text-gold cursor-pointer">اطلاعات تماس</li></Link>
-                    <Link to='/discount'><li className="hover:text-gold cursor-pointer">تخفیفات</li></Link>
-
+                    <Link to='/information'><li className={`hover:text-teal cursor-pointer ${location.pathname === '/information' ? 'text-blue font-bold' : ''}`}>درباره ما</li></Link>
+                    <Link to='/ContactUs'><li className={`hover:text-teal cursor-pointer ${location.pathname === '/ContactUs' ? 'text-blue font-bold' : ''}`}>اطلاعات تماس</li></Link>
+                    <Link to='/discount'><li className={`hover:text-teal cursor-pointer ${location.pathname === '/discount' ? 'text-blue font-bold' : ''}`}>تخفیفات</li></Link>
                 </ul>
             </nav>
 
+            {/* منوی موبایل */}
             {menuOpen && (
                 <div className="fixed inset-0 z-40 md:hidden flex flex-row">
-
-                    {/* لایه خاکستری نیمه‌شفاف برای بستن */}
-
-                    {/* منوی موبایل سمت راست (عرض 50%) */}
-                    <div className="w-1/2  max-w-xs bg-white h-[calc(100vh)] p-5 shadow-lg overflow-y-auto">
+                    <div className="w-1/2 max-w-xs bg-white h-[calc(100vh)] p-5 shadow-lg overflow-y-auto">
                         <ul className="flex flex-col space-y-4 text-md text-grayDark">
                             <Link to="/"><li className="font-bold">صفحه اصلی</li></Link>
                             <Link to="/productsAll"><li className="font-bold">تمامی محصولات</li></Link>
                             <Link to="/information"><li>درباره ما</li></Link>
-                            <Link to="/contact"><li>اطلاعات تماس</li></Link>
+                            <Link to="/ContactUs"><li>اطلاعات تماس</li></Link>
                             <Link to="/discount"><li>تخفیفات</li></Link>
 
-                            {/* زیرمنوی قطعات */}
                             <li className="mt-2 space-y-1">
                                 <button
                                     className="flex justify-between text-white items-center w-full font-medium bg-green p-2 rounded-md"
@@ -309,21 +307,18 @@ function Header() {
                                     قطعات
                                     <FaChevronDown className={`transform transition ${mobileMenuOpen.category ? 'rotate-180' : ''}`} />
                                 </button>
-
                                 {mobileMenuOpen.category && (
-                                    <ul className="mt-2 space-y-1 pr-2 text-sm text-grayDark  font-bold">
+                                    <ul className="mt-2 space-y-1 pr-2 text-sm text-grayDark font-bold">
                                         {categories.map((cat) => (
                                             <li key={cat.PartTypeID}>
-                                                <Link
-                                                    to={`/category/${encodeURIComponent(cat.Name)}`}
-                                                    className="block px-2 py-1 hover:text-orange"
-                                                >
+                                                <Link to={`/category/${encodeURIComponent(cat.Name)}`} className="block px-2 py-1 hover:text-orange">
                                                     {cat.Name}
                                                 </Link>
                                             </li>
                                         ))}
                                     </ul>
                                 )}
+
                                 <button
                                     className="flex justify-between text-white items-center w-full font-medium bg-green p-2 rounded-md"
                                     onClick={() => handleBtnMobile("brand")}
@@ -335,10 +330,7 @@ function Header() {
                                     <ul className="mt-2 space-y-1 pr-2 text-sm text-grayDark font-bold">
                                         {brands.map((bra) => (
                                             <li key={bra.NidBrand}>
-                                                <Link
-                                                    to={`/brand/${encodeURIComponent(bra.Name)}`}
-                                                    className="block px-2 py-1 hover:text-orange"
-                                                >
+                                                <Link to={`/brand/${encodeURIComponent(bra.Name)}`} className="block px-2 py-1 hover:text-orange">
                                                     {bra.Name}
                                                 </Link>
                                             </li>
@@ -348,14 +340,9 @@ function Header() {
                             </li>
                         </ul>
                     </div>
-                    <div
-                        className="flex-1 bg-black bg-opacity-30 backdrop-blur-sm"
-                        onClick={() => setMenuOpen(false)}
-                    ></div>
-
+                    <div className="flex-1 bg-black bg-opacity-30 backdrop-blur-sm" onClick={() => setMenuOpen(false)} />
                 </div>
             )}
-
         </header>
     );
 }

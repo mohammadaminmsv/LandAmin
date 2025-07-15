@@ -112,10 +112,10 @@ export default function AdvancedUserDashboard() {
 
             {/* تنظیمات سریع */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                <Card onClick={() => navigate("/profile")}> <CardContent className="cursor-pointer hover:bg-gray-50 text-center"><p className="text-gold font-bold text-lg">ویرایش پروفایل</p></CardContent></Card>
-                <Card onClick={() => navigate("/wallet")}> <CardContent className="cursor-pointer hover:bg-gray-50 text-center"><p className="text-gold font-bold text-lg">کیف پول</p></CardContent></Card>
-                <Card onClick={() => navigate("/support")}> <CardContent className="cursor-pointer hover:bg-gray-50 text-center"><p className="text-gold font-bold text-lg">تیکت پشتیبانی</p></CardContent></Card>
-                <Card onClick={() => navigate("/invoices")}> <CardContent className="cursor-pointer hover:bg-gray-50 text-center"><p className="text-gold font-bold text-lg">فاکتورهای من</p></CardContent></Card>
+                <Card onClick={() => navigate("/profile")}> <CardContent className="cursor-pointer hover:bg-gray-50 text-center"><p className="text-teal font-bold text-lg">ویرایش پروفایل</p></CardContent></Card>
+                <Card onClick={() => navigate("/wallet")}> <CardContent className="cursor-pointer hover:bg-gray-50 text-center"><p className="text-teal font-bold text-lg">کیف پول</p></CardContent></Card>
+                <Card onClick={() => navigate("/support")}> <CardContent className="cursor-pointer hover:bg-gray-50 text-center"><p className="text-teal font-bold text-lg">تیکت پشتیبانی</p></CardContent></Card>
+                <Card onClick={() => navigate("/invoices")}> <CardContent className="cursor-pointer hover:bg-gray-50 text-center"><p className="text-teal font-bold text-lg">فاکتورهای من</p></CardContent></Card>
             </div>
 
             {/* نمودارها */}

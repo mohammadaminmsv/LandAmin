@@ -44,7 +44,7 @@ export default function ProductsAll() {
                 <button
                     onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                     disabled={currentPage === 1}
-                    className="px-4 py-2 bg-red text-black text-sm rounded disabled:opacity-50"
+                    className="px-2 py-2 bg-teal text-white text-sm rounded disabled:opacity-50"
                 >
                     <GrNext />
 
@@ -54,7 +54,7 @@ export default function ProductsAll() {
                     <button
                         key={i}
                         onClick={() => setCurrentPage(i + 1)}
-                        className={`px-3 py-1 text-sm rounded ${currentPage === i + 1 ? "bg-goldDark text-white" : "bg-gray-100 text-gray-700"}`}
+                        className={`px-3 py-1 text-sm rounded ${currentPage === i + 1 ? "bg-darkBlue text-white" : "bg-gray-100 text-gray-700"}`}
                     >
                         {i + 1}
                     </button>
@@ -63,7 +63,7 @@ export default function ProductsAll() {
                 <button
                     onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                     disabled={currentPage === totalPages}
-                    className="px-4 py-2 bg-red text-black text-sm rounded disabled:opacity-50"
+                    className="px-2 py-2 bg-teal text-white text-sm rounded disabled:opacity-50"
                 >
                     <GrPrevious />
                 </button>
