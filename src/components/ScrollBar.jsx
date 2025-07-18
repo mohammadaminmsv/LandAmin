@@ -1,7 +1,8 @@
 import React, { useRef } from "react";
-
+import { useNavigate } from "react-router-dom";
 const ScrollBar = ({ object }) => {
     const scrollRef = useRef(null);
+    const navigate = useNavigate();
 
     const scroll = (direction) => {
         const { current } = scrollRef;
@@ -40,6 +41,7 @@ const ScrollBar = ({ object }) => {
                     <div
                         key={i}
                         className="min-w-[200px] flex flex-col justify-center bg-white px-6 py-3 rounded-md shadow text-sm font-medium flex-shrink-0 text-center"
+                        onClick={() => obj.NidBrand ? navigate(`/brand/${encodeURIComponent(obj.Name)}`) : navigate(`/category/${encodeURIComponent(obj.Name)}`)}
                     >
                         <img
                             src={obj.image}

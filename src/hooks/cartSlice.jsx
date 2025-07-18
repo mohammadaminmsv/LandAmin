@@ -52,6 +52,7 @@ const cartSlice = createSlice({
             state.lastUpdated = Date.now();
             saveToLocalStorage(state);
         },
+        
 
         updateQuantity: (state, action) => {
             const { NidProduct, quantity } = action.payload;

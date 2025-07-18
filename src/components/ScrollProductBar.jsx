@@ -41,7 +41,7 @@ const ScrollProductBar = ({ products }) => {
                 {products.map((product) => (
                     <div
                         key={product.NidProduct}
-                        className="bg-white max-w-[340px] flex-shrink-0"
+                        className="bg-white rounded-2xl max-w-[340px] flex-shrink-0"
                         onClick={() => navigate(`/product/${product.NidProduct}`)}
                     >
                         <ProductCard key={product.NidProduct} product={product} />

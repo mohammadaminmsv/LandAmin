@@ -87,13 +87,13 @@ const Home = () => {
 
             </section>
 
-            <section>
+            <section className="bg-white p-6 rounded-xl shadow">
                 <h2 className="text-2xl font-bold mb-4 text-red-600">پیشنهادات ویژه و تخفیف‌ها</h2>
                 <ScrollProductBar products={discountProducts} />
 
             </section>
 
-            <section className="bg-white p-6 rounded-xl shadow">
+            <section className="bg-teal p-6 rounded-xl shadow">
                 <h2 className="text-2xl font-bold mb-4">جدیدترین محصولات</h2>
                 <ScrollProductBar products={newProducts} />
             </section>

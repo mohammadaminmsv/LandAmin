@@ -1,11 +1,16 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button, Dialog, DialogContent, DialogActions, IconButton } from '@mui/material';
 import { Print, Close } from '@mui/icons-material';
 import { format } from 'date-fns';
+import { getAllItems } from '../services/OrdersItem/getAllItems';
+import { getSpecProduct } from '../services/Product/getSpecProduct';
+import { useSelector } from 'react-redux';
 
 const InvoiceModal = ({ invoice, onClose }) => {
     const printRef = useRef(null);
-
+    const User = useSelector((state) => state.userLog) || {};
+    const [items, setItems] = useState()
+    const [product, setProducts] = useState()
     const handlePrint = () => {
         const printWindow = window.open('', '_blank');
         printWindow.document.write(`
@@ -13,7 +18,7 @@ const InvoiceModal = ({ invoice, onClose }) => {
             <html dir="rtl">
             <head>
                 <meta charset="UTF-8">
-                <title>فاکتور ${invoice?.id || ''}</title>
+                <title>فاکتور ${invoice?.NidOrder || ''}</title>
                 <style>
                     body {
                         font-family: 'B Nazanin', Tahoma, sans-serif;
@@ -87,6 +92,52 @@ const InvoiceModal = ({ invoice, onClose }) => {
         }, 500);
     };
 
+    useEffect(() => {
+        const fetchItemsAndProducts = async () => {
+            try {
+                const itemsRes = await getAllItems(invoice.NidOrder);
+                if (!itemsRes.success) return;
+                setItems(itemsRes.data);
+
+                const productIds = itemsRes.data.map(item => item.NidProduct);
+
+                // گرفتن همه محصولات به‌صورت موازی
+                const productPromises = productIds.map(id => getSpecProduct(id));
+                const productsResults = await Promise.all(productPromises);
+
+                const productsMap = {};
+                productsResults.forEach((res, idx) => {
+                    if (res.success) {
+                        productsMap[productIds[idx]] = res.data;
+                    }
+                });
+
+                setProducts(productsMap);
+            } catch (error) {
+                console.error("Error fetching items/products", error);
+            }
+        };
+
+        fetchItemsAndProducts();
+    }, [invoice]);
+
+
+    const getStatusLabel = (status) => {
+        switch (status) {
+            case 'pending':
+                return <span className="text-yellow-500 font-bold">در حال پرداخت</span>;
+            case 'paid':
+                return <span className="text-green-600 font-bold">پرداخت شده</span>;
+            case 'canceled':
+                return <span className="text-red-500 font-bold">لغو شده</span>;
+            case 'shipped':
+                return <span className="text-blue-600 font-bold">ارسال شده</span>;
+            default:
+                return <span className="text-gray-500">نامشخص</span>;
+        }
+    };
+
+
     if (!invoice) return null;
 
     return (
@@ -101,16 +152,16 @@ const InvoiceModal = ({ invoice, onClose }) => {
                     {/* هدر فاکتور */}
                     <div className="header">
                         <div>
-                            <h2 style={{ margin: 0, color: '#B58E23' }}>شرکت شما</h2>
+                            <h2 style={{ margin: 0, color: '#B58E23' }}>فروشگاه الکترونیکی و قطعات امین (لندامین)</h2>
                             <p style={{ margin: '5px 0' }}>آدرس: تهران، خیابان نمونه، پلاک ۱۲۳</p>
                             <p style={{ margin: '5px 0' }}>تلفن: ۰۲۱-۱۲۳۴۵۶۷۸</p>
                             <p style={{ margin: '5px 0' }}>شناسه مالی: ۱۲۳۴۵۶۷۸۹</p>
                         </div>
                         <div style={{ textAlign: 'right' }}>
                             <h2 style={{ margin: 0, color: '#B58E23' }}>فاکتور فروش</h2>
-                            <p style={{ margin: '5px 0' }}>شماره: {invoice?.id || '---'}</p>
+                            <p style={{ margin: '5px 0' }}>شماره: {invoice?.NidOrder.split("-").pop() || '---'}</p>
                             <p style={{ margin: '5px 0' }}>
-                                تاریخ: {invoice?.date ? format(new Date(invoice.date), 'yyyy/MM/dd') : '---'}
+                                تاریخ: {new Date(invoice.OrderDate).toLocaleDateString('fa-IR')}
                             </p>
                         </div>
                     </div>
@@ -118,15 +169,14 @@ const InvoiceModal = ({ invoice, onClose }) => {
                     {/* اطلاعات مشتری */}
                     <div className="customer-info">
                         <div>
-                            <h3 style={{ margin: '0 0 10px 0' }}>مشتری:</h3>
-                            <p style={{ margin: '5px 0' }}>نام: کاربر سایت</p>
-                            <p style={{ margin: '5px 0' }}>شماره تماس: ---</p>
+                            <h3 style={{ margin: '0 0 10px 0' }}>مشتری:{User.User.NidUser.split("-").pop()}</h3>
+                            <p style={{ margin: '5px 0' }}>نام:{User.User.Name}  {User.User.LastName}</p>
+                            <p style={{ margin: '5px 0' }}>شماره تماس:{User.User.tel}</p>
+                            <p style={{ margin: '5px 0' }}>آدرس ارسالی:{invoice.sendAddress ? invoice.sendAddress : User.User.tel}</p>
                         </div>
                         <div style={{ textAlign: 'right' }}>
                             <h3 style={{ margin: '0 0 10px 0' }}>وضعیت پرداخت:</h3>
-                            <p style={{ margin: '5px 0', color: invoice.paid ? 'green' : 'red' }}>
-                                {invoice.paid ? 'پرداخت شده' : 'در انتظار پرداخت'}
-                            </p>
+                            {getStatusLabel(invoice.Status)}
                         </div>
                     </div>
 
@@ -142,15 +192,23 @@ const InvoiceModal = ({ invoice, onClose }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {invoice?.items?.map((item, index) => (
-                                <tr key={index}>
-                                    <td>{index + 1}</td>
-                                    <td>{item.name}</td>
-                                    <td>{item.quantity}</td>
-                                    <td>{item.unitPrice.toLocaleString()}</td>
-                                    <td>{(item.quantity * item.unitPrice).toLocaleString()}</td>
-                                </tr>
-                            ))}
+                            <tbody>
+                                {items && product ? items.map((item, index) => {
+                                    const productInfo = product[item.NidProduct] || {};
+                                    return (
+                                        <tr key={item.NidOrderItem}>
+                                            <td>{index + 1}</td>
+                                            <td>{productInfo.Title || '---'}</td>
+                                            <td>{item.Quantity}</td>
+                                            <td>{Number(item.PriceAtPurchase).toLocaleString()}</td>
+                                            <td>{(item.Quantity * item.PriceAtPurchase).toLocaleString()}</td>
+                                        </tr>
+                                    );
+                                }) : (
+                                    <tr><td colSpan="5">در حال بارگذاری...</td></tr>
+                                )}
+                            </tbody>
+
                         </tbody>
                     </table>
 
@@ -161,24 +219,25 @@ const InvoiceModal = ({ invoice, onClose }) => {
                                 <tr>
                                     <td style={{ textAlign: 'right' }}>جمع کل:</td>
                                     <td style={{ textAlign: 'left' }}>
-                                        {invoice?.items?.reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0).toLocaleString()} تومان
+                                        {items ? items.reduce((sum, item) => sum + (item.Quantity * item.PriceAtPurchase), 0).toLocaleString() : '---'} تومان
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style={{ textAlign: 'right' }}>مالیات (۹٪):</td>
+                                    <td style={{ textAlign: 'right' }}>مالیات (10٪):</td>
                                     <td style={{ textAlign: 'left' }}>
-                                        {Math.round(invoice?.items?.reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0) * 0.09).toLocaleString()} تومان
+                                        {items ? Math.round(items.reduce((sum, item) => sum + (item.Quantity * item.PriceAtPurchase), 0) * 0.1).toLocaleString() : '---'} تومان
                                     </td>
                                 </tr>
                                 <tr style={{ fontWeight: 'bold' }}>
                                     <td style={{ textAlign: 'right' }}>مبلغ قابل پرداخت:</td>
                                     <td style={{ textAlign: 'left' }}>
-                                        {invoice?.total?.toLocaleString()} تومان
+                                        {items ? Math.round(items.reduce((sum, item) => sum + (item.Quantity * item.PriceAtPurchase), 0) * 1.1).toLocaleString() : '---'} تومان
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
+
 
                     {/* توضیحات پایانی */}
                     <div className="footer">

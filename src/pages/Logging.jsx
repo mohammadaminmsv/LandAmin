@@ -73,7 +73,7 @@ const Logging = () => {
                     <LaInput
                         type="text"
                         name="EmailOrNationalCode"
-                        placeholder="ایمیل یا کد ملی"
+                        placeholder="ایمیل یا کد ملی یا شماره تلفن"
                         value={formData.EmailOrNationalCode}
                         onChange={handleChange}
                         className="bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 w-full"

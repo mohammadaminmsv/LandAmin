@@ -35,7 +35,13 @@ export default function ProductsAll() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {currentProducts.map((p) => (
-                    <ProductCard key={p.NidProduct} product={p} />
+                    <div
+                        key={p.NidProduct}
+                        className="bg-white rounded-2xl max-w-[340px] flex-shrink-0"
+                       
+                    >
+                        <ProductCard key={p.NidProduct} product={p} />
+                    </div>
                 ))}
             </div>
 

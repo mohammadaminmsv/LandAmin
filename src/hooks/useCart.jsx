@@ -22,9 +22,17 @@ export const useCart = () => {
         dispatch(cartSlice.actions.clearCart());
     }, [dispatch]);
 
+    const itemCount = cart.items.reduce((total, item) => total + item.quantity, 0);
+
+    const totalPrice = cart.items.reduce((total, item) => {
+        const price = Number(item.Price) || 0;
+        return total + (price * item.quantity);
+    }, 0);
+
     return {
         items: cart.items,
-        itemCount: cart.items.reduce((total, item) => total + item.quantity, 0),
+        itemCount,
+        totalPrice,
         lastUpdated: cart.lastUpdated,
         addToCart,
         removeFromCart,

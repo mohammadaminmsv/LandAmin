@@ -20,6 +20,9 @@ import Notification from '../components/Notification';
 import ProductsAll from '../pages/ProductsAll';
 import FilteredPage from '../components/FilteredPage';
 import SearchResults from '../components/SearchResults';
+import Profile from '../pages/Profile';
+import Support from '../pages/Support';
+import AllOrders from '../pages/AllOrders';
 
 function AppRouter() {
     const notification = useSelector((state) => state.noti.notiaction);
@@ -58,7 +61,10 @@ function AppRouter() {
                         }
                     />
                     <Route path="/" element={<Home />} />
+                    <Route path="/HomePage" element={<Home />} />
                     <Route path="/cart" element={<Cart />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/support" element={<Support />} />
                     <Route path="/checkout" element={<Checkout />} />
                     <Route path="/ContactUs" element={<ContactUs />} />
                     <Route path="/information" element={<Information />} />
@@ -66,6 +72,7 @@ function AppRouter() {
                     <Route path="/category/:filterName" element={<FilteredPage type="category" />} />
                     <Route path="/brand/:filterName" element={<FilteredPage type="brand" />} />
                     <Route path="/search" element={<SearchResults />} />
+                    <Route path="/invoices" element={<AllOrders />} />
                     <Route path="/disCount" element={<DisCount />} />
                     <Route
                         path="/dashboard"

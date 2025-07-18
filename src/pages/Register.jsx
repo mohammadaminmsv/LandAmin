@@ -68,8 +68,9 @@ const Register = () => {
     };
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(errors);
-        if (validate()) return;
+
+        validate()
+        if (Object.values(errors).some(val => val !== null && val !== undefined && val !== "")) return;
         try {
             const data = await registerUser(formData);
 

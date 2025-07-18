@@ -48,7 +48,18 @@ function Footer() {
             <div className="max-w-7xl mx-auto py-6 px-4 flex flex-col md:flex-row items-center justify-between">
                 <p className="text-xs text-center md:text-right mb-2 md:mb-0">کلیه حقوق این وب‌سایت متعلق به لندامین است.</p>
                 <div className="flex items-center gap-4">
-                    <img src="/images/enamad.png" alt="نماد اعتماد" className="h-10" />
+                    <a
+                        referrerPolicy="origin"
+                        target="_blank"
+                        href="https://trustseal.enamad.ir/?id=627405&Code=j2eyhNeLibCTUONpr4UNzONLDXBzckoF"
+                    >
+                        <img
+                            referrerPolicy="origin"
+                            src="https://trustseal.enamad.ir/logo.aspx?id=627405&Code=j2eyhNeLibCTUONpr4UNzONLDXBzckoF"
+                            alt="نماد اعتماد"
+                            className="h-10 cursor-pointer"
+                        />
+                    </a>
                     <img src="/images/samandehi.png" alt="ساماندهی" className="h-10" />
                     <img src="/images/logo3.png" alt="نشان سوم" className="h-10" />
                 </div>
