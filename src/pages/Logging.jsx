@@ -10,6 +10,7 @@ import LaInput from "../components/LaInput";
 import LaButton from "../components/LaButton";
 import { LastLog } from "../services/Logging/LastLog";
 import Captcha from "../components/Capcha";
+import { getDashboard } from "../services/Dashboard/getDashboard";
 
 const Logging = () => {
     const [formData, setFormData] = useState({
@@ -31,6 +32,29 @@ const Logging = () => {
         try {
             const data = await loginUser(formData);
             if (data.success) {
+                try {
+                    const dashboard = await getDashboard(data.data.NidUser);
+                    if (dashboard.success) {
+                        dispatch(login({
+                            token: data.data.token,
+                            user: data.data,
+                            dashboard: dashboard.data
+                        }));
+                        dispatch(mainUser({
+                            dashboard: dashboard.data,
+                            user: data.data
+                        }));
+                    }
+
+                } catch (error) {
+                    dispatch(
+                        NotiActions.showNotification({
+                            open: true,
+                            message: `${error.message}`,
+                            type: "error",
+                        })
+                    );
+                }
                 console.log("data", data);
                 localStorage.setItem("token", data.token);
                 dispatch(
@@ -42,12 +66,7 @@ const Logging = () => {
                 );
                 const infoLog = await LastLog(data.data.NidUser, data.token);
                 console.log(infoLog);
-                // در جایی که پاسخ لاگین را دریافت می‌کنید:
-                dispatch(login({
-                    token: data.token,
-                    user: data.data.user // اگر می‌خواهید اطلاعات کاربر را هم ذخیره کنید
-                }));
-                dispatch(mainUser(data.data));
+
                 navigate("/dashboard");
             }
         } catch (err) {

@@ -3,6 +3,7 @@ import { getAllProduct } from "../services/Product/getAllProduct";
 import ProductCard from "../components/ProductCard";
 import { GrNext } from "react-icons/gr";
 import { GrPrevious } from "react-icons/gr";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 
 export default function ProductsAll() {
@@ -34,15 +35,18 @@ export default function ProductsAll() {
             <h2 className="text-xl font-bold mb-4">لیست محصولات</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {currentProducts.map((p) => (
-                    <div
-                        key={p.NidProduct}
-                        className="bg-white rounded-2xl max-w-[340px] flex-shrink-0"
-                       
-                    >
-                        <ProductCard key={p.NidProduct} product={p} />
+                {products.length === 0 ? (
+                    <div className="col-span-full flex justify-center items-center py-10">
+                        <LoadingSpinner message="در حال بارگذاری محصولات..." />
                     </div>
-                ))}
+                ) : (
+                    currentProducts.map((p) => (
+                        <div key={p.NidProduct} className="bg-white rounded-2xl max-w-[340px] flex-shrink-0">
+                            <ProductCard product={p} />
+                        </div>
+                    ))
+                )}
+
             </div>
 
             {/* Pagination */}

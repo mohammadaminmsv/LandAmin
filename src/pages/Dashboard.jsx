@@ -24,6 +24,7 @@ const COLORS = ["#8884d8", "#82ca9d", "#ffc658"];
 
 export default function AdvancedUserDashboard() {
     const User = useSelector((state) => state.userLog) || {};
+    console.log(User);
     const token = useSelector((state) => state.auth) || {};
     const [user, setUser] = useState(User);
     const [profile, serProfile] = useState(false)

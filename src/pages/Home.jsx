@@ -5,7 +5,10 @@ import LaButton from "../components/LaButton";
 import { getAllProduct } from "../services/Product/getAllProduct";
 import { getBrands } from "../services/Brands/getBrands";
 import { getCategory } from "../services/Category/getCategory";
-import ScrollProductBar from "../components/ScrollProductBar";
+import LoadingSpinner from "../components/LoadingSpinner";
+import ScrollProductBar
+    from "../components/ScrollProductBar";
+
 
 const sliders1 = [
     { image: "/images/slidershow/slide1.png", caption: "🎉 جشنواره فروش تابستانی" },
@@ -83,29 +86,66 @@ const Home = () => {
 
             <section className="bg-white p-6 rounded-xl shadow">
                 <h2 className="text-2xl font-bold mb-4">محصولات ما</h2>
-                <ScrollProductBar products={filteredProducts} />
+                {products.length === 0 ? (
+                    <div className="col-span-full flex justify-center items-center py-10">
+                        <LoadingSpinner message="در حال بارگذاری محصولات..." />
+                    </div>
+                ) : (
+                    <ScrollProductBar products={filteredProducts} />
 
+                )}
             </section>
 
             <section className="bg-white p-6 rounded-xl shadow">
                 <h2 className="text-2xl font-bold mb-4 text-red-600">پیشنهادات ویژه و تخفیف‌ها</h2>
-                <ScrollProductBar products={discountProducts} />
+                {products.length === 0 ? (
+                    <div className="col-span-full flex justify-center items-center py-10">
+                        <LoadingSpinner message="در حال بارگذاری محصولات..." />
+                    </div>
+                ) : (
+                    <ScrollProductBar products={discountProducts} />
+                )}
+
 
             </section>
 
             <section className="bg-teal p-6 rounded-xl shadow">
                 <h2 className="text-2xl font-bold mb-4">جدیدترین محصولات</h2>
-                <ScrollProductBar products={newProducts} />
+                {products.length === 0 ? (
+                    <div className="col-span-full flex justify-center items-center py-10">
+                        <LoadingSpinner message="در حال بارگذاری محصولات..." />
+                    </div>
+                ) : (
+                    <ScrollProductBar products={newProducts} />
+
+                )}
             </section>
 
             <section className="text-center">
                 <h2 className="text-xl font-bold mb-4 text-center">دسته‌بندی‌ها</h2>
-                <ScrollBar object={categories} />
+                {categories.length === 0 ? (
+                    <div className="col-span-full flex justify-center items-center py-10">
+                        <LoadingSpinner message="در حال بارگذاری محصولات..." />
+                    </div>
+                ) : (
+                    <ScrollBar object={categories} />
+
+                )}
+
             </section>
 
             <section className="text-center">
                 <h2 className="text-xl font-bold mb-4">برندهای ما</h2>
-                <ScrollBar object={brands} />
+                {categories.length === 0 ? (
+                    <div className="col-span-full flex justify-center items-center py-10">
+                        <LoadingSpinner message="در حال بارگذاری محصولات..." />
+                    </div>
+                ) : (
+                    <ScrollBar object={brands} />
+
+                )}
+
+
             </section>
 
             <section className="bg-indigo-100 p-6 rounded-xl text-center">
@@ -115,7 +155,7 @@ const Home = () => {
                     <input type="email" placeholder="ایمیل شما..." className="p-2 w-80 rounded-l border border-gray-300" />
                     <div className="w-96">
                         <LaButton variant="danger">عضویت</LaButton>
-                        </div>
+                    </div>
                 </div>
             </section>
 

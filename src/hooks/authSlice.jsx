@@ -25,12 +25,14 @@ const authSlice = createSlice({
       state.loggedIn = true;
       state.token = action.payload.token;
       state.user = action.payload.user;
+      state.dashboard = action.payload.dashboard;
       localStorage.setItem("token", action.payload.token);
     },
     logout(state) {
       state.loggedIn = false;
       state.token = null;
       state.user = null;
+      state.dashboard = null;
       localStorage.removeItem("token");
     },
     verifyToken(state) {

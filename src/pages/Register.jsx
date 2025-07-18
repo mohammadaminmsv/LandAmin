@@ -10,6 +10,7 @@ import { login } from "../hooks/authSlice";
 import { mainUser } from "../hooks/userLoged";
 import { LastLog } from "../services/Logging/LastLog";
 import Captcha from "../components/Capcha";
+import { createDashboard } from "../services/Dashboard/createDashboard";
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -90,12 +91,31 @@ const Register = () => {
                         type: "success",
                     })
                 );
-                dispatch(login({
-                    token: data.data.token,
-                    user: data.data.user
-                }));
-                dispatch(mainUser(data.data));
+
                 navigate("/dashboard");
+                try {
+                    const dashboard = await createDashboard(data.data.NidUser);
+                    if (dashboard.success) {
+                        dispatch(login({
+                            token: data.data.token,
+                            user: data.data,
+                            dashboard: dashboard.data
+                        }));
+                        dispatch(mainUser({
+                            dashboard: dashboard.data,
+                            user: data.data
+                        }));
+                    }
+
+                } catch (error) {
+                    dispatch(
+                        NotiActions.showNotification({
+                            open: true,
+                            message: `${error.message}`,
+                            type: "error",
+                        })
+                    );
+                }
 
             }
         } catch (error) {

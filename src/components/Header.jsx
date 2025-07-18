@@ -8,6 +8,7 @@ import { useCart } from '../hooks/useCart';
 import { getBrands } from '../services/Brands/getBrands';
 import { getAllProduct } from '../services/Product/getAllProduct';
 import { useLocation } from 'react-router-dom';
+import LoadingSpinner from './LoadingSpinner';
 
 
 function Header() {
@@ -74,10 +75,19 @@ function Header() {
     };
 
     useEffect(() => {
-        getAllCategory();
-        getAllBrands();
-        getAllAccessory();
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => {
+                getAllCategory();
+                getAllBrands();
+            });
+        } else {
+            setTimeout(() => {
+                getAllCategory();
+                getAllBrands();
+            }, 200);
+        }
     }, []);
+
 
     useEffect(() => {
         setCartItemsCount(itemCount);
@@ -244,38 +254,55 @@ function Header() {
                             <div>
                                 <h4 className="font-bold text-gray-700 mb-3 border-b pb-1">قطعات داخلی</h4>
                                 <ul className="grid grid-cols-2 gap-2 text-sm text-gray-600">
-                                    {categories.map((cat) => {
-                                        const isActive = location.pathname === `/category/${encodeURIComponent(cat.Name)}`;
-                                        return (
-                                            <li key={cat.PartTypeID}>
-                                                <Link
-                                                    to={`/category/${encodeURIComponent(cat.Name)}`}
-                                                    className={`hover:text-blue transition ${isActive ? 'text-blue font-bold' : ''}`}
-                                                >
-                                                    {cat.Name}
-                                                </Link>
-                                            </li>
-                                        );
-                                    })}
+                                    {categories.length === 0 ? (
+                                        <div className="col-span-full flex justify-center items-center py-10">
+                                            <LoadingSpinner message="در حال بارگذاری محصولات..." />
+                                        </div>
+                                    ) : (
+                                        categories.map((cat) => {
+                                            const isActive = location.pathname === `/category/${encodeURIComponent(cat.Name)}`;
+                                            return (
+                                                <li key={cat.PartTypeID}>
+                                                    <Link
+                                                        to={`/category/${encodeURIComponent(cat.Name)}`}
+                                                        className={`hover:text-blue transition ${isActive ? 'text-blue font-bold' : ''}`}
+                                                    >
+                                                        {cat.Name}
+                                                    </Link>
+                                                </li>
+                                            );
+                                        })
+
+                                    )}
+
+
 
                                 </ul>
                             </div>
                             <div>
                                 <h4 className="font-bold text-gray-700 mb-3 border-b pb-1">برندها</h4>
                                 <ul className="grid grid-cols-2 gap-2 text-sm text-gray-600">
-                                    {brands.map((bra) => {
-                                        const isActive = location.pathname === `/brand/${encodeURIComponent(bra.Name)}`;
-                                        return (
-                                            <li key={bra.NidBrand}>
-                                                <Link
-                                                    to={`/brand/${encodeURIComponent(bra.Name)}`}
-                                                    className={`hover:text-blue transition ${isActive ? 'text-blue font-bold' : ''}`}
-                                                >
-                                                    {bra.Name}
-                                                </Link>
-                                            </li>
-                                        );
-                                    })}
+                                    {brands.length === 0 ? (
+                                        <div className="col-span-full flex justify-center items-center py-10">
+                                            <LoadingSpinner message="در حال بارگذاری محصولات..." />
+                                        </div>
+                                    ) : (
+                                        brands.map((bra) => {
+                                            const isActive = location.pathname === `/brand/${encodeURIComponent(bra.Name)}`;
+                                            return (
+                                                <li key={bra.NidBrand}>
+                                                    <Link
+                                                        to={`/brand/${encodeURIComponent(bra.Name)}`}
+                                                        className={`hover:text-blue transition ${isActive ? 'text-blue font-bold' : ''}`}
+                                                    >
+                                                        {bra.Name}
+                                                    </Link>
+                                                </li>
+                                            );
+                                        })
+
+                                    )}
+
 
                                 </ul>
                             </div>
