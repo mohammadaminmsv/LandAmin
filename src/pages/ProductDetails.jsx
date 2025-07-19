@@ -67,9 +67,13 @@ export default function ProductDetails() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 rounded-xl shadow-md mb-10">
         <div className="flex items-center justify-center bg-grayLight rounded-lg p-4">
           <img
-            src={product.picturesURL || "https://via.placeholder.com/300"}
+            src={
+              product.picturesURL
+                ? `https://landamin.com/uploads/${product.picturesURL}`
+                : "https://via.placeholder.com/150"
+            }
             alt={product.Title}
-            className="max-h-80 object-contain"
+            className="object-contain h-full max-h-90 w-fit max-w-full"
           />
         </div>
 

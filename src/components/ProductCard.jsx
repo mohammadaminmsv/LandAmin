@@ -1,18 +1,21 @@
 import React from "react";
-import { addToCartWithCheck, updateCartQuantityWithCheck } from "./CartThunks";
+import { addToCartWithCheck, removeCartQuantityWithCheck, updateCartQuantityWithCheck } from "./CartThunks";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 export default function ProductCard({ product }) {
     const dispatch = useDispatch();
     const navigate = useNavigate()
-    const cartItems = useSelector((state) => state.cart.items);
+    const cartItems = useSelector((state) => state.cart.items || {});
     const cartItem = cartItems.find(item => item.NidProduct === product.NidProduct);
     const quantity = cartItem ? cartItem.quantity : 0;
 
     const handleQuantityChange = (NidProduct, newQuantity) => {
         if (newQuantity > 0) {
             dispatch(updateCartQuantityWithCheck(NidProduct, newQuantity));
+        }
+        else {
+            dispatch(removeCartQuantityWithCheck(NidProduct, newQuantity));
         }
     };
     return (
@@ -28,7 +31,6 @@ export default function ProductCard({ product }) {
                     ویژه
                 </div>
             )}
-
             {/* تصویر */}
             <div onClick={() => navigate(`/product/${product.NidProduct}`)} className="h-96 rounded-2xl bg-grayLight flex items-center justify-center p-2">
                 <img
@@ -38,7 +40,7 @@ export default function ProductCard({ product }) {
                             : "https://via.placeholder.com/150"
                     }
                     alt={product.Title}
-                    className="object-contain h-full max-h-40"
+                    className="object-contain h-full max-h-72 w-fit max-w-64"
                 />
             </div>
 
@@ -86,14 +88,14 @@ export default function ProductCard({ product }) {
                     ) : (
                         <div className="flex items-center gap-2">
                             <button
-                                onClick={() => handleQuantityChange(product.NidProduct, product.quantity - 1)}
+                                onClick={() => handleQuantityChange(product.NidProduct, cartItem.quantity - 1)}
                                 className="px-3 py-1 bg-gray rounded hover:bg-grayLight"
                             >
                                 -
                             </button>
-                            <span className="px-4 text-red">{product.quantity}</span>
+                            <span className="px-4 text-red">{cartItem.quantity}</span>
                             <button
-                                onClick={() => handleQuantityChange(product.NidProduct, product.quantity + 1)}
+                                onClick={() => handleQuantityChange(product.NidProduct, cartItem.quantity + 1)}
                                 className="px-3 py-1 bg-gray rounded hover:bg-grayLight"
                             >
                                 +

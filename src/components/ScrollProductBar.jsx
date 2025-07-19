@@ -1,10 +1,8 @@
 import React, { useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import ProductCard from "./ProductCard";
 
 const ScrollProductBar = ({ products }) => {
     const scrollRef = useRef(null);
-    const navigate = useNavigate();
 
     const scroll = (direction) => {
         const { current } = scrollRef;
@@ -42,7 +40,7 @@ const ScrollProductBar = ({ products }) => {
                     <div
                         key={product.NidProduct}
                         className="bg-white rounded-2xl max-w-[340px] flex-shrink-0"
-                        onClick={() => navigate(`/product/${product.NidProduct}`)}
+
                     >
                         <ProductCard key={product.NidProduct} product={product} />
                     </div>

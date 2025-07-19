@@ -19,11 +19,11 @@ const Logging = () => {
         Password: "",
     });
     const [error, setError] = useState("");
-    // const [isCaptchaValid, setIsCaptchaValid] = useState(false);
+    const [isCaptchaValid, setIsCaptchaValid] = useState(false);
 
-    // const handleCaptchaValidation = (status) => {
-    //     setIsCaptchaValid(status);
-    // };
+    const handleCaptchaValidation = (status) => {
+        setIsCaptchaValid(status);
+    };
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -105,11 +105,11 @@ const Logging = () => {
                         onChange={handleChange}
                         className="bg-gray-50 border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 w-full"
                     />
-                    {/* <Captcha onValidate={handleCaptchaValidation} /> */}
+                    <Captcha onValidate={handleCaptchaValidation} />
                     <LaButton
                         type="submit"
                         variant='primary'
-                    // disabled={!isCaptchaValid}
+                        disabled={!isCaptchaValid}
 
                     >
                         ورود

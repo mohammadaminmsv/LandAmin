@@ -43,35 +43,26 @@ const Register = () => {
     const validate = () => {
         const newErrors = {};
         if (!formData.Name.trim()) newErrors.Name = "نام نباید خالی باشد.";
-        if (!formData.LastName.trim())
-            newErrors.LastName = "نام خانوادگی نباید خالی باشد.";
-        if (!formData.Email.includes("@"))
-            newErrors.Email = "ایمیل معتبر وارد کنید.";
-        if (isNaN(formData.Age) || formData.Age <= 0)
-            newErrors.Age = "سن باید عددی و بزرگتر از صفر باشد.";
-        if (!/^\d{10}$/.test(formData.NationalCode))
-            newErrors.NationalCode = "کد ملی باید ۱۰ رقم عددی باشد.";
-        if (!/^\d{11}$/.test(formData.tel))
-            newErrors.tel = " شماره تلفن باید 11 رقم عددی باشد.";
-        if (formData.Password.length < 6)
-            newErrors.Password = "رمز عبور باید حداقل ۶ کاراکتر باشد.";
-        if (formData.Password !== formData.rePassword)
-            newErrors.rePassword = "رمز عبور و تکرار آن یکسان نیست.";
+        if (!formData.LastName.trim()) newErrors.LastName = "نام خانوادگی نباید خالی باشد.";
+        if (!formData.Email.includes("@")) newErrors.Email = "ایمیل معتبر وارد کنید.";
+        if (isNaN(formData.Age) || formData.Age <= 0) newErrors.Age = "سن باید عددی و بزرگتر از صفر باشد.";
+        if (!/^\d{10}$/.test(formData.NationalCode)) newErrors.NationalCode = "کد ملی باید ۱۰ رقم عددی باشد.";
+        if (!/^\d{11}$/.test(formData.tel)) newErrors.tel = "شماره تلفن باید 11 رقم عددی باشد.";
+        if (formData.Password.length < 6) newErrors.Password = "رمز عبور باید حداقل ۶ کاراکتر باشد.";
+        if (formData.Password !== formData.rePassword) newErrors.rePassword = "رمز عبور و تکرار آن یکسان نیست.";
 
         setErrors(newErrors);
-        console.log(errors);
 
-        if (errors) {
-            return false
-        } else {
-            return true
-        }
+        return Object.keys(newErrors).length === 0;
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        validate()
-        if (Object.values(errors).some(val => val !== null && val !== undefined && val !== "")) return;
+        const isValid = validate();
+        if (!isValid) {
+            console.log("فرم نامعتبر است");
+            return;
+        }
         try {
             const data = await registerUser(formData);
 
@@ -83,7 +74,6 @@ const Register = () => {
                 })
             );
             if (data.success) {
-                localStorage.setItem("token", data.token);
                 dispatch(
                     NotiActions.showNotification({
                         open: true,
@@ -94,16 +84,19 @@ const Register = () => {
 
                 navigate("/dashboard");
                 try {
-                    const dashboard = await createDashboard(data.data.NidUser);
+                    const dashboard = await createDashboard(data.data[0].NidUser);
                     if (dashboard.success) {
+                        console.log(data);
+                        localStorage.setItem("token", data.token);
+
                         dispatch(login({
-                            token: data.data.token,
-                            user: data.data,
+                            token: data.token,
+                            user: data.data[0],
                             dashboard: dashboard.data
                         }));
                         dispatch(mainUser({
                             dashboard: dashboard.data,
-                            user: data.data
+                            user: data.data[0]
                         }));
                     }
 

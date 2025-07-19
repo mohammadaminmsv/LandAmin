@@ -1,20 +1,10 @@
 import axios from "axios";
 import config from "../../../public/config";
-import { encryptData } from "../../utils/EncryptData";
 
-export const createDashboard = async (data , NidUser) => {
-  const encryptedData = encryptData(data);
+export const createDashboard = async (NidUser) => {
   try {
     const response = await axios.post(
-      `${config.apiBaseURL}/dashboard/create/${NidUser}`,
-      {
-        encryptedData,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      `${config.apiBaseURL}/dashboard/create/${NidUser}`
     );
     return response.data;
   } catch (error) {

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { removeItem } from '../hooks/cartSlice';
 import LaButton from '../components/LaButton';
 import LaInput from '../components/LaInput';
-import { updateCartQuantityWithCheck } from '../components/CartThunks';
+import { removeCartQuantityWithCheck, updateCartQuantityWithCheck } from '../components/CartThunks';
 
 function Cart() {
     const dispatch = useDispatch();
@@ -31,7 +31,9 @@ function Cart() {
     const handleQuantityChange = (NidProduct, newQuantity) => {
         if (newQuantity > 0) {
             dispatch(updateCartQuantityWithCheck(NidProduct, newQuantity));
-        }
+        }else {
+                    dispatch(removeCartQuantityWithCheck(NidProduct.NidProduct, newQuantity));
+                }
     };
 
     const applyDiscount = () => {

@@ -1,4 +1,4 @@
-import { addItem, updateQuantity } from "../hooks/cartSlice";
+import { addItem, removeItem, updateQuantity } from "../hooks/cartSlice";
 import { NotiActions } from "../hooks/Notiaction";
 
 export const addToCartWithCheck = (product) => (dispatch, getState) => {
@@ -27,6 +27,19 @@ export const updateCartQuantityWithCheck = (NidProduct, quantity) => (dispatch, 
 
     if (quantity <= stock) {
         dispatch(updateQuantity({ NidProduct, quantity }));
+    } else {
+        dispatch(
+            NotiActions.showNotification({
+                open: true,
+                message: "تعداد بیشتر از موجودی است!",
+                type: "warning",
+            })
+        );
+    }
+};
+export const removeCartQuantityWithCheck = (NidProduct, quantity) => (dispatch) => {
+    if (quantity == 0) {
+        dispatch(removeItem(NidProduct));
     } else {
         dispatch(
             NotiActions.showNotification({

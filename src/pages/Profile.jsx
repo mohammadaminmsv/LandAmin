@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { nidProcess } from "../utils/Process";
@@ -15,13 +15,17 @@ import { updateUser } from "../services/SignUp/updateUser";
 function Profile({ isOpen, onClose, title, user }) {
 
     if (!isOpen) return null;
-    const [formData, setFormData] = useState({ ...user, Password: null, rePassword: null });
+    const [formData, setFormData] = useState({ ...user, Password: "", rePassword: "" });
     const [errors, setErrors] = useState({});
     const [isCaptchaValid, setIsCaptchaValid] = useState(false);
 
     const handleCaptchaValidation = (status) => {
         setIsCaptchaValid(status);
     };
+    useEffect(() => {
+        setFormData({ ...user, Password: "", rePassword: "" });
+    }, [user]);
+
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -76,8 +80,8 @@ function Profile({ isOpen, onClose, title, user }) {
                 localStorage.setItem("token", data.token);
 
                 dispatch(login({
-                    token: data.token,        // از data.token استفاده کن
-                    user: data.data           // اطلاعات جدید کاربر
+                    token: data.token,
+                    user: data.data
                 }));
 
                 dispatch(mainUser(data.data));
@@ -88,8 +92,10 @@ function Profile({ isOpen, onClose, title, user }) {
                     type: "success",
                 }));
 
-                navigate("/dashboard");
+                onClose();
+
             }
+
         } catch (error) {
             dispatch(
                 NotiActions.showNotification({
